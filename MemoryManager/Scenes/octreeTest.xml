@@ -1,19 +1,19 @@
 <Scene>
 	<Spheres>
 		<Sphere>
-			<KeyFrame FrameNum="0" Radius="5.0f" Reflection="0.0" Transparency="1.0">
+			<KeyFrame FrameNum="0" Radius="5.0f" Reflection="1.0" Transparency="1.0">
 				<Centre X="0.0" Y="0.0" Z="-20.0"/>
 				<SurfaceColor X="1.0" Y="0.32" Z="0.36"/>
 			</KeyFrame>
 		</Sphere>
 		<Sphere>
-			<KeyFrame FrameNum="0" Radius="3.0f" Reflection="0.0" Transparency="1.0">
+			<KeyFrame FrameNum="0" Radius="3.0f" Reflection="1.0" Transparency="1.0">
 				<Centre X="0.0" Y="0.0" Z="-15.0"/>
 				<SurfaceColor X="0.9" Y="0.76" Z="0.46"/>
 			</KeyFrame>
 		</Sphere>
 		<Sphere>
-			<KeyFrame FrameNum="0" Radius="1.0f" Reflection="0.0" Transparency="1.0">
+			<KeyFrame FrameNum="0" Radius="1.0f" Reflection="1.0" Transparency="1.0">
 				<Centre X="0.0" Y="0.0" Z="-10.0"/>
 				<SurfaceColor X="0.65" Y="0.77" Z="0.97"/>
 			</KeyFrame>

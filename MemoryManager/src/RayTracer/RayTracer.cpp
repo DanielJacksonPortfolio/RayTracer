@@ -13,7 +13,7 @@
 #include <filesystem>
 #include <thread>
 
-#ifdef WIN32
+#ifndef __unix
 #include <windows.h>
 #endif
 
@@ -221,56 +221,50 @@ void RayTracer::Render(std::unordered_set<Sphere>& spheres, int iteration, unsig
 	}
 	std::string outputFolder = ROOT_DIRECTORY + "/Images/" + StringTools::RemoveExtension(StringTools::GetFileFromPath(filepath));
 	
-	bool directoryExists = true;
-	#ifdef WIN32
-	directoryExists = CreateDirectory(StringTools::StandardToWide(outputFolder).c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError());
-	#else
 	std::error_code error;
-	directoryExists = std::filesystem::exists(outputFolder,error);
-	if(!directoryExists)
+	bool directoryExists = std::filesystem::exists(outputFolder, error);
+	if (!directoryExists)
 	{
-		directoryExists = std::filesystem::create_directory(outputFolder,error);
-		if(error.value() != 0)
+		directoryExists = std::filesystem::create_directory(outputFolder, error);
+		if (error.value() != 0)
 		{
 			frameMutex.lock();
 			std::cout << error.message() << std::endl;
 			frameMutex.unlock();
 		}
 	}
-	#endif
 
 	// Save result to a PPM image (keep these flags if you compile under Windows)
-	if(directoryExists)
-	{		
+	if (directoryExists)
+	{
 		fileMutex.lock();
-		FILE* fp;
+		FILE* fp = nullptr;
 
 #ifdef __unix
-	const char* outputFolderCStr = (outputFolder + "/spheres" + std::to_string(iteration) + ".ppm").c_str();
-	fp = fopen(outputFolderCStr,"wb+");
-#elif
-	fopen_s(&fp, (outputFolder + "/spheres" + std::to_string(iteration) + ".ppm").c_str(), "wb+");
+		fp = fopen((outputFolder + "/spheres" + std::to_string(iteration) + ".ppm").c_str(), "wb+");
+#else
+		fopen_s(&fp, (outputFolder + "/spheres" + std::to_string(iteration) + ".ppm").c_str(), "wb+");
 #endif
 
-		std::string metadata = std::string("P6\n" + std::to_string(width) + " " + std::to_string(height) + "\n255\n");
-
-		char color[3];
-		const char* metadataCStr = metadata.c_str();
-		int size = metadata.size();
-		fwrite(metadataCStr, 1, size, fp);
-		for (unsigned i = 0; i < height * width; ++i)
+		if (fp != nullptr)
 		{
-			color[0] = static_cast<char>(std::min(1.0f, image[i].x) * 255);
-			color[1] = static_cast<char>(std::min(1.0f, image[i].y) * 255);
-			color[2] = static_cast<char>(std::min(1.0f, image[i].z) * 255);
+			std::string metadata = std::string("P6\n" + std::to_string(width) + " " + std::to_string(height) + "\n255\n");
+			char color[3];
+			fwrite(metadata.c_str(), 1, metadata.size(), fp);
+			for (unsigned i = 0; i < height * width; ++i)
+			{
+				color[0] = static_cast<char>(std::min(1.0f, image[i].x) * 255);
+				color[1] = static_cast<char>(std::min(1.0f, image[i].y) * 255);
+				color[2] = static_cast<char>(std::min(1.0f, image[i].z) * 255);
 
-			fwrite(&color, 1, 3, fp);
+				fwrite(&color, 1, 3, fp);
+			}
+			fclose(fp);
+			fileMutex.unlock();
+			frameMutex.lock();
+			std::cout << "Rendered and saved " << outputFolder + "/spheres" + std::to_string(iteration) + ".ppm" << std::endl;
+			frameMutex.unlock();
 		}
-		fclose(fp);		
-		fileMutex.unlock();
-		frameMutex.lock();
-		std::cout << "Rendered and saved " << outputFolder + "/spheres" + std::to_string(iteration) + ".ppm" << std::endl;
-		frameMutex.unlock();
 	}
 	else
 	{
@@ -468,7 +462,7 @@ void RayTracer::AnimatedRender(std::string filepath, unsigned width, unsigned he
 
 void RayTracer::GenerateVideo(std::string filepath)
 {
-	#ifdef WIN32
+#ifndef __unix
 	STARTUPINFOA si;
 	PROCESS_INFORMATION pi;
 
@@ -496,5 +490,5 @@ void RayTracer::GenerateVideo(std::string filepath)
 	CloseHandle(pi.hThread);
 
 	std::cout << "FFMPEG Compilation Complete" << std::endl;
-	#endif
+#endif
 }

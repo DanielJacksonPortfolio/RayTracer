@@ -1,15 +1,15 @@
 #pragma once
 #include <mutex>
 
-#define USE_THREADING false
-#define USE_OCTREE false
+#define USE_THREADING true
+#define USE_OCTREE true
 
 #define MAX_OCTREE_LAYERS 5
 
-#ifdef WIN32
-#define ROOT_DIRECTORY "."
-#else
+#ifdef __unix
 #define ROOT_DIRECTORY std::string(getenv("HOME")) + "/Documents/Repos/RayTracer/MemoryManager"
+#else
+#define ROOT_DIRECTORY std::string(".")
 #endif
 
 static bool VerboseOutput = false;
@@ -23,7 +23,7 @@ class Vector3;
 
 typedef Vector3<float> Vector3f;
 
-#if defined __linux__ || defined __APPLE__
+#ifdef __unix
 	// "Compiled for Linux
 #else
 	// Windows doesn't define these values by default, Linux does
