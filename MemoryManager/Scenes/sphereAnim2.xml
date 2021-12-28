@@ -1,0 +1,30 @@
+<Scene>
+	<Spheres>
+		<Sphere>
+			<KeyFrame FrameNum="0" Radius="10.0f" Reflection="0.0" Transparency="1.0">
+				<Centre X="0.0" Y="0.0" Z="-40.0"/>
+				<SurfaceColor X="0.0" Y="0.0" Z="0.0"/>
+			</KeyFrame>
+			<KeyFrame FrameNum="25" Radius="10.0f" Reflection="0.0" Transparency="1.0">
+				<Centre X="0.0" Y="0.0" Z="-40.0"/>
+				<SurfaceColor X="1.0" Y="0.0" Z="0.0"/>
+			</KeyFrame>
+			<KeyFrame FrameNum="50" Radius="10.0f" Reflection="0.0" Transparency="1.0">
+				<Centre X="0.0" Y="0.0" Z="-40.0"/>
+				<SurfaceColor X="0.0" Y="1.0" Z="0.0"/>
+			</KeyFrame>
+			<KeyFrame FrameNum="75" Radius="10.0f" Reflection="0.0" Transparency="1.0">
+				<Centre X="0.0" Y="0.0" Z="-40.0"/>
+				<SurfaceColor X="0.0" Y="0.0" Z="1.0"/>
+			</KeyFrame>
+			<KeyFrame FrameNum="100" Radius="10.0f" Reflection="0.0" Transparency="1.0">
+				<Centre X="0.0" Y="0.0" Z="-40.0"/>
+				<SurfaceColor X="1.0" Y="1.0" Z="1.0"/>
+			</KeyFrame>
+			<KeyFrame FrameNum="125" Radius="10.0f" Reflection="0.0" Transparency="1.0">
+				<Centre X="0.0" Y="0.0" Z="-40.0"/>
+				<SurfaceColor X="0.0" Y="0.0" Z="0.0"/>
+			</KeyFrame>
+		</Sphere>
+	</Spheres>
+</Scene>
