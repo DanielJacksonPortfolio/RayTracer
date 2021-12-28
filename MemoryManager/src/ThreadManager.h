@@ -1,6 +1,6 @@
 #pragma once
-#include "MemoryManagement\ManagedObject.h"
 #include "GlobalDefines.h"
+#include "../src/MemoryManagement/ManagedObject.h"
 
 #include <functional>
 #include <mutex>

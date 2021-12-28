@@ -2263,7 +2263,7 @@ namespace tinyxml2
             return 0;
         }
 #else
-        FILE* fp = fopen(filepath, mode);
+        FILE* fp = fopen(filepath, currentMode);
 #endif
         return fp;
     }

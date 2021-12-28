@@ -1,10 +1,16 @@
 #pragma once
 #include <mutex>
 
-#define USE_THREADING true
-#define USE_OCTREE true
+#define USE_THREADING false
+#define USE_OCTREE false
 
 #define MAX_OCTREE_LAYERS 5
+
+#ifdef WIN32
+#define ROOT_DIRECTORY "."
+#else
+#define ROOT_DIRECTORY std::string(getenv("HOME")) + "/Documents/Repos/RayTracer/MemoryManager"
+#endif
 
 static bool VerboseOutput = false;
 

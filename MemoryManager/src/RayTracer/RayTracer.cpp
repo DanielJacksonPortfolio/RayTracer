@@ -9,10 +9,13 @@
 #include "../MemoryManagement/Heap.h"
 
 #define NOMINMAX
-
-#include <windows.h>
 #include <chrono>
+#include <filesystem>
 #include <thread>
+
+#ifdef WIN32
+#include <windows.h>
+#endif
 
 using namespace tinyxml2;
 
@@ -216,22 +219,45 @@ void RayTracer::Render(std::unordered_set<Sphere>& spheres, int iteration, unsig
 	{
 		delete octree;
 	}
-
-	std::string outputFolder = "./Images/" + StringTools::RemoveExtension(StringTools::GetFileFromPath(filepath));
+	std::string outputFolder = ROOT_DIRECTORY + "/Images/" + StringTools::RemoveExtension(StringTools::GetFileFromPath(filepath));
+	
+	bool directoryExists = true;
+	#ifdef WIN32
+	directoryExists = CreateDirectory(StringTools::StandardToWide(outputFolder).c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError());
+	#else
+	std::error_code error;
+	directoryExists = std::filesystem::exists(outputFolder,error);
+	if(!directoryExists)
+	{
+		directoryExists = std::filesystem::create_directory(outputFolder,error);
+		if(error.value() != 0)
+		{
+			frameMutex.lock();
+			std::cout << error.message() << std::endl;
+			frameMutex.unlock();
+		}
+	}
+	#endif
 
 	// Save result to a PPM image (keep these flags if you compile under Windows)
-	if (CreateDirectory(StringTools::StandardToWide(outputFolder).c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError())
+	if(directoryExists)
 	{		
 		fileMutex.lock();
 		FILE* fp;
 
-		fopen_s(&fp, (outputFolder + "/spheres" + std::to_string(iteration) + ".ppm").c_str(), "wb+");
+#ifdef __unix
+	const char* outputFolderCStr = (outputFolder + "/spheres" + std::to_string(iteration) + ".ppm").c_str();
+	fp = fopen(outputFolderCStr,"wb+");
+#elif
+	fopen_s(&fp, (outputFolder + "/spheres" + std::to_string(iteration) + ".ppm").c_str(), "wb+");
+#endif
 
 		std::string metadata = std::string("P6\n" + std::to_string(width) + " " + std::to_string(height) + "\n255\n");
 
 		char color[3];
-
-		fwrite(metadata.c_str(), 1, metadata.size(), fp);
+		const char* metadataCStr = metadata.c_str();
+		int size = metadata.size();
+		fwrite(metadataCStr, 1, size, fp);
 		for (unsigned i = 0; i < height * width; ++i)
 		{
 			color[0] = static_cast<char>(std::min(1.0f, image[i].x) * 255);
@@ -442,6 +468,7 @@ void RayTracer::AnimatedRender(std::string filepath, unsigned width, unsigned he
 
 void RayTracer::GenerateVideo(std::string filepath)
 {
+	#ifdef WIN32
 	STARTUPINFOA si;
 	PROCESS_INFORMATION pi;
 
@@ -469,4 +496,5 @@ void RayTracer::GenerateVideo(std::string filepath)
 	CloseHandle(pi.hThread);
 
 	std::cout << "FFMPEG Compilation Complete" << std::endl;
+	#endif
 }

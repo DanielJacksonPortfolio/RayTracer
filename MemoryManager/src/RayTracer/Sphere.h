@@ -41,6 +41,18 @@ public:
 			reflection == sphere.reflection &&
 			frameNum == sphere.frameNum);
 	}
+
+	bool operator !=(const Sphere& sphere) const
+	{
+		return !(
+			center == sphere.center &&
+			radius == sphere.radius &&
+			surfaceColor == sphere.surfaceColor &&
+			emissionColor == sphere.emissionColor &&
+			transparency == sphere.transparency &&
+			reflection == sphere.reflection &&
+			frameNum == sphere.frameNum);
+	}
 };
 namespace std 
 {

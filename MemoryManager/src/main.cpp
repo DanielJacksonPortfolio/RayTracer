@@ -27,11 +27,11 @@ void RayTracerTest()
     // This sample only allows one choice per program execution. Feel free to improve upon this
     srand(13);
 
-    rayTracer->AnimatedRender("./Scenes/octreeTest.xml");
-    //rayTracer->AnimatedRender("./Scenes/spheres.xml");
-    //rayTracer->AnimatedRender("./Scenes/sphereAnim.xml");
-    //rayTracer->AnimatedRender("./Scenes/sphereAnim2.xml");
-    //rayTracer->AnimatedRender("./Scenes/sphereAnim3.xml");
+    rayTracer->AnimatedRender(ROOT_DIRECTORY + "/Scenes/octreeTest.xml");
+    //rayTracer->AnimatedRender(ROOT_DIRECTORY + "/Scenes/spheres.xml");
+    //rayTracer->AnimatedRender(ROOT_DIRECTORY + "/Scenes/sphereAnim.xml");
+    //rayTracer->AnimatedRender(ROOT_DIRECTORY + "/Scenes/sphereAnim2.xml");
+    //rayTracer->AnimatedRender(ROOT_DIRECTORY + "/Scenes/sphereAnim3.xml");
 
     delete rayTracer;
 
