@@ -7,7 +7,7 @@
 #include <vector>
 #include <thread>
 #include <mutex>
-#include <unordered_set>
+#include <vector>
 
 class Sphere;
 class Animation;
@@ -26,8 +26,8 @@ public:
     void AnimatedRender(std::string filepath, unsigned width = 640, unsigned height = 480);
 private:
     static float Mix(const float& a, const float& b, const float& mix);
-    static Vector3f Trace(const Vector3f& rayorig, const Vector3f& raydir, std::unordered_set<Sphere>& spheres, const int& depth);
-    static void Render(std::unordered_set<Sphere>& spheres, int iteration, unsigned width = 640, unsigned height = 480, std::string filepath = "");
+    static Vector3f Trace(const Vector3f& rayorig, const Vector3f& raydir, std::vector<Sphere>& spheres, const int& depth);
+    static void Render(std::vector<Sphere>& spheres, int iteration, unsigned width = 640, unsigned height = 480, std::string filepath = "");
     void GenerateVideo(std::string filepath);
     static void RenderFrame(Animation* animation, unsigned width, unsigned height, int frameNum, std::string filepath);
     static std::mutex frameMutex;
