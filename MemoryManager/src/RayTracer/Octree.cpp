@@ -22,18 +22,18 @@ void Octree::operator delete[](void* pMem)
     ::operator delete[](pMem);
 }
 
-Octree* Octree::ConstructTree(Vector3f dimensions, Vector3f position, std::vector<Sphere>& spheres)
+Octree* Octree::ConstructTree(Vector3f dimensions, Vector3f position, std::unordered_set<Sphere>& spheres)
 {
     Octree* octree = new Octree();
     octree->rootNode = new OctreeNode();
 
     octree->rootNode->SetBounds(dimensions, position);
-    for (int i = 0; i < spheres.size(); ++i)
+    for (auto& sphere : spheres)
     {
-        bool isSet = octree->rootNode->SetChild(spheres[i]);
+        bool isSet = octree->rootNode->SetChild(sphere);
         if (!isSet)
         {
-            octree->externalSpheres.push_back(spheres[i]);
+            octree->externalSpheres.insert(sphere);
         }
     }
     octree->rootNode->Subdivide(0);
@@ -46,16 +46,16 @@ Octree::~Octree()
     delete rootNode;
 }
 
-std::vector<Sphere> Octree::Intersect(Vector3f rayOrigin, Vector3f rayDirection)
+std::unordered_set<Sphere> Octree::Intersect(Vector3f rayOrigin, Vector3f rayDirection)
 {
-    std::vector<Sphere> possibleSpheres = std::vector<Sphere>();
+    std::unordered_set<Sphere> possibleSpheres = std::unordered_set<Sphere>();
 
     Vector3f invDir = Vector3f(1.0f / rayDirection.x, 1.0f / rayDirection.y, 1.0f / rayDirection.z);
 
     rootNode->RayIntersect(possibleSpheres, rayOrigin, rayDirection, invDir);
-    for (int i = 0; i < externalSpheres.size(); i++)
+    for (auto& externalSphere : externalSpheres)
     {
-        possibleSpheres.push_back(externalSpheres[i]);
+        possibleSpheres.insert(externalSphere);
     }
     return possibleSpheres;
 }
@@ -133,7 +133,7 @@ void Swap(float& a, float& b)
     b = temp;
 }
 
-void OctreeNode::RayIntersect(std::vector<Sphere>& possibleSpheres, Vector3f rayOrigin, Vector3f rayDirection, Vector3f invDir)
+void OctreeNode::RayIntersect(std::unordered_set<Sphere>& possibleSpheres, Vector3f rayOrigin, Vector3f rayDirection, Vector3f invDir)
 {
     Vector3f minCoord = position;
     Vector3f maxCoord = position + dimensions;
@@ -170,7 +170,7 @@ void OctreeNode::RayIntersect(std::vector<Sphere>& possibleSpheres, Vector3f ray
     }
     else
     {
-        possibleSpheres.insert(possibleSpheres.begin(),containedSpheres.begin(), containedSpheres.end());
+        possibleSpheres.insert(containedSpheres.begin(), containedSpheres.end());
     }
 }
 

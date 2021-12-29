@@ -74,17 +74,17 @@ float RayTracer::Mix(const float& a, const float& b, const float& mix)
 Vector3f RayTracer::Trace(
 	const Vector3f& rayorig,
 	const Vector3f& raydir,
-	std::vector<Sphere>& spheres,
+	std::unordered_set<Sphere>& spheres,
 	const int& depth)
 {
 	//if (raydir.length() != 1) std::cerr << "Error " << raydir << std::endl;
 	float tnear = INFINITY;
 	const Sphere* spherePtr = nullptr;
 	// find intersection of this ray with the sphere in the scene
-	for (int i = 0; i< spheres.size(); ++i)
+	for (auto& sphere : spheres)
 	{
 		float t0 = INFINITY, t1 = INFINITY;
-		if (spheres[i].Intersect(rayorig, raydir, t0, t1))
+		if (sphere.Intersect(rayorig, raydir, t0, t1))
 		{
 			if (t0 < 0)
 			{
@@ -94,7 +94,7 @@ Vector3f RayTracer::Trace(
 			if (t0 < tnear)
 			{
 				tnear = t0;
-				spherePtr = &spheres[i];
+				spherePtr = &sphere;
 			}
 		}
 	}
@@ -148,28 +148,27 @@ Vector3f RayTracer::Trace(
 	else
 	{
 		// it's a diffuse object, no need to raytrace any further
-		for (int i = 0; i < spheres.size(); ++i)
+		for (auto& sphere : spheres)
 		{
-			if (spheres[i].emissionColor.x > 0)
+			if (sphere.emissionColor.x > 0)
 			{
 				// this is a light
 				Vector3f transmission = 1;
-				Vector3f lightDirection = spheres[i].center - phit;
+				Vector3f lightDirection = sphere.center - phit;
 				lightDirection.normalize();
-				for (int j = 0; j < spheres.size(); ++j)
+				for (auto& sphere2 : spheres)
 				{
-					if (i != j)
+					if (sphere != sphere2)
 					{
 						float t0, t1;
-						if (spheres[j].Intersect(phit + nhit * bias, lightDirection, t0, t1))
+						if (sphere2.Intersect(phit + nhit * bias, lightDirection, t0, t1))
 						{
 							transmission = 0;
 							break;
 						}
 					}
 				}
-				surfaceColor += spherePtr->surfaceColor * transmission *
-					std::max(float(0), nhit.dot(lightDirection)) * spheres[i].emissionColor;
+				surfaceColor += spherePtr->surfaceColor * transmission * std::max(float(0), nhit.dot(lightDirection)) * sphere.emissionColor;
 			}
 		}
 	}
@@ -182,7 +181,7 @@ Vector3f RayTracer::Trace(
 // trace it and return a color. If the ray hits a sphere, we return the color of the
 // sphere at the intersection point, else we return the background color.
 //[/comment]
-void RayTracer::Render(std::vector<Sphere>& spheres, int iteration, unsigned width, unsigned height, std::string filepath)
+void RayTracer::Render(std::unordered_set<Sphere>& spheres, int iteration, unsigned width, unsigned height, std::string filepath)
 {
 	Vector3f* image = new Vector3f[width * height], * pixel = image;
 	float invWidth = 1 / float(width), invHeight = 1 / float(height);
@@ -417,11 +416,11 @@ Animation* RayTracer::LoadScene(std::string filepath)
 
 void RayTracer::RenderFrame(Animation* animation, unsigned width, unsigned height, int frameNum, std::string filepath)
 {
-	std::vector<Sphere> spheres = std::vector<Sphere>();
+	std::unordered_set<Sphere> spheres = std::unordered_set<Sphere>();
 	std::vector<SphereAnimation*>* sphereAnims = animation->GetSpheres();
 	for (int i = 0; i < sphereAnims->size(); ++i)
 	{
-		spheres.push_back((*sphereAnims)[i]->GetSphereAtFrame(frameNum));
+		spheres.insert((*sphereAnims)[i]->GetSphereAtFrame(frameNum));
 	}
 
 	Render(spheres, frameNum, width, height, filepath);

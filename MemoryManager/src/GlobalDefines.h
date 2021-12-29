@@ -2,7 +2,7 @@
 #include <mutex>
 
 #define USE_THREADING true
-#define USE_OCTREE true
+#define USE_OCTREE false
 
 #define MAX_OCTREE_LAYERS 5
 

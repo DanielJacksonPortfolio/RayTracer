@@ -5,7 +5,7 @@
 #include "Sphere.h"
 
 #include <vector>
-#include <vector>
+#include <unordered_set>
 
 class OctreeNode : public ManagedObject
 {
@@ -17,7 +17,7 @@ public:
 	void SetBounds(Vector3f dimensions, Vector3f position);
 	void Subdivide(int layer);
 	bool SetChild(const Sphere& sphere);
-	void RayIntersect(std::vector<Sphere>& possibleSpheres, Vector3f rayOrigin, Vector3f rayDirection, Vector3f invDir);
+	void RayIntersect(std::unordered_set<Sphere>& possibleSpheres, Vector3f rayOrigin, Vector3f rayDirection, Vector3f invDir);
 	bool AABBSphereIntersection(const Sphere& sphere);
 
 	~OctreeNode();
@@ -36,14 +36,14 @@ public:
 	static void* operator new[](size_t size);
 	static void operator delete[](void* pMem);
 
-	static Octree* ConstructTree(Vector3f dimensions, Vector3f position, std::vector<Sphere>& spheres);
+	static Octree* ConstructTree(Vector3f dimensions, Vector3f position, std::unordered_set<Sphere>& spheres);
 
 	~Octree();
 
-	std::vector<Sphere> Intersect(Vector3f rayOrigin, Vector3f rayDirection);
+	std::unordered_set<Sphere> Intersect(Vector3f rayOrigin, Vector3f rayDirection);
 
 private:
 	OctreeNode* rootNode;
-	std::vector<Sphere> externalSpheres;
+	std::unordered_set<Sphere> externalSpheres;
 };
 
