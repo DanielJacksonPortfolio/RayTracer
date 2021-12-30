@@ -47,7 +47,11 @@ void* GlobalNew(size_t size, Heap* pHeap, bool useMemoryPool)
 	size_t totalSize = size + sizeof(Header) + sizeof(Footer);
 	byte* allocatedMemory = nullptr;
 	bool usingMemoryPool = !((!useMemoryPool || (PoolManager::instanceIsNull && PoolManager::creationInProgress))  || PoolManager::creationInProgress);
-	usingMemoryPool = false;
+	
+	if (!USE_MEMORY_POOLS)
+	{
+		usingMemoryPool = false;
+	}
 
 	allocatedMemory = usingMemoryPool ? (byte*)PoolManager::Instance()->Allocate(totalSize) : (byte*)malloc(totalSize);
 

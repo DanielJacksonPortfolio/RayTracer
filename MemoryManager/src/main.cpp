@@ -24,19 +24,17 @@ void RayTracerTest()
 
     RayTracer* rayTracer = new RayTracer();
 
-    // This sample only allows one choice per program execution. Feel free to improve upon this
     srand(13);
 
-    rayTracer->AnimatedRender(ROOT_DIRECTORY + "/Scenes/octreeTest.xml");
     //rayTracer->AnimatedRender(ROOT_DIRECTORY + "/Scenes/spheres.xml");
     //rayTracer->AnimatedRender(ROOT_DIRECTORY + "/Scenes/sphereAnim.xml");
-    //rayTracer->AnimatedRender(ROOT_DIRECTORY + "/Scenes/sphereAnim2.xml");
+    rayTracer->AnimatedRender(ROOT_DIRECTORY + "/Scenes/sphereAnim2.xml");
     //rayTracer->AnimatedRender(ROOT_DIRECTORY + "/Scenes/sphereAnim3.xml");
+    //rayTracer->AnimatedRender(ROOT_DIRECTORY + "/Scenes/octreeTest.xml");
 
     delete rayTracer;
 
-    VERBOSE_OUTPUT(std::cout << std::endl;);
-    HeapManager::Instance()->GetDefaultHeap()->Walk();
+    std::cout << std::endl;
     HeapManager::Instance()->GetHeap("RayTracerDefault")->Walk();
     HeapManager::Instance()->GetHeap("Shape")->Walk();
     HeapManager::Instance()->GetHeap("Vector")->Walk();
@@ -92,7 +90,7 @@ void MemoryManagerTest()
     std::cout << "Post-New Graphics Heap Num Bytes: " << HeapManager::Instance()->GetHeap("Graphics")->GetNumberOfBytesAllocated() << std::endl;
     std::cout << "Post-New Sound Heap Num Bytes: " << HeapManager::Instance()->GetHeap("Sound")->GetNumberOfBytesAllocated() << std::endl << std::endl;
 
-    //HeapManager::Instance()->GetHeap("MemoryManagerDefault")->Walk();
+    HeapManager::Instance()->GetHeap("MemoryManagerDefault")->Walk();
 
     std::cout << "Delete IntValList" << std::endl << std::endl;
 
@@ -101,11 +99,10 @@ void MemoryManagerTest()
     std::cout << "Post-Delete Default Heap Num Bytes: " << HeapManager::GetDefaultHeap()->GetNumberOfBytesAllocated() << std::endl;
     std::cout << "Post-Delete MemoryManagerDefault Heap Num Bytes: " << HeapManager::Instance()->GetHeap("MemoryManagerDefault")->GetNumberOfBytesAllocated() << std::endl;
 
-    ////VERBOSE_OUTPUT(std::cout << std::endl;);
-    //HeapManager::GetDefaultHeap()->Walk();
-    //HeapManager::Instance()->GetHeap("MemoryManagerDefault")->Walk();
-    //HeapManager::Instance()->GetHeap("Sound")->Walk();
-    //HeapManager::Instance()->GetHeap("Graphics")->Walk();
+    std::cout << std::endl;
+    HeapManager::Instance()->GetHeap("MemoryManagerDefault")->Walk();
+    HeapManager::Instance()->GetHeap("Sound")->Walk();
+    HeapManager::Instance()->GetHeap("Graphics")->Walk();
 
     std::cout << "Delete Objects" << std::endl << std::endl;
 
@@ -121,11 +118,10 @@ void MemoryManagerTest()
     }
     delete gObjectVector;
 
-    //VERBOSE_OUTPUT(std::cout << std::endl;);
-    //HeapManager::GetDefaultHeap()->Walk();
-    //HeapManager::Instance()->GetHeap("MemoryManagerDefault")->Walk();
-    //HeapManager::Instance()->GetHeap("Sound")->Walk();
-    //HeapManager::Instance()->GetHeap("Graphics")->Walk();
+    VERBOSE_OUTPUT(std::cout << std::endl;);
+    HeapManager::Instance()->GetHeap("MemoryManagerDefault")->Walk();
+    HeapManager::Instance()->GetHeap("Sound")->Walk();
+    HeapManager::Instance()->GetHeap("Graphics")->Walk();
 
     std::cout << "Final MemoryManagerDefault Heap Num Bytes: " << HeapManager::Instance()->GetHeap("MemoryManagerDefault")->GetNumberOfBytesAllocated() << std::endl;
     std::cout << "Final Graphics Heap Num Bytes: " << HeapManager::Instance()->GetHeap("Graphics")->GetNumberOfBytesAllocated() << std::endl;
@@ -199,7 +195,6 @@ void ThreadingTest()
     ThreadManager* threadManager = new ThreadManager();
     auto start = std::chrono::steady_clock::now();
 
-    //threadManager->TimedOutput(123);
     threadManager->ThreadStart();
 
     auto finish = std::chrono::steady_clock::now();
